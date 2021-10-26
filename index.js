@@ -11,6 +11,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/filings', (req, res) => {
+  /**
+  Returns JSON containing the most recent EDGAR Filings from any entity.
+  */
   const urlBase = 'https://www.sec.gov'
   let latestUrl = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent'
   axios.get(latestUrl)
@@ -22,7 +25,8 @@ app.get('/filings', (req, res) => {
         let nameLine = true
 
         $("tr", html).each(function () {
-
+          // The entries for each filing are separated into two table rows
+          // I utilize a bool switch which is not super reliable but the schema of the html is dependable
           if (nameLine) {
             nameHolder = $(this).text().replace(/\r?\n|\r/g, "");
             nameLine = !nameLine;
@@ -48,6 +52,11 @@ app.get('/filings', (req, res) => {
 });
 
 app.get('/filings/:ticker', (req, res) => {
+  /**
+  Returns JSON containing the most recent filings for the given company.
+  The rawFiling key brings you to the original filing document (usually XML)
+  The url key brings you to the page for that filing with every document contained in the filing.
+  */
   const symbol = req.params.ticker;
   const urlBase = 'https://www.sec.gov'
   let tickerUrlExtend = `/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&owner=include`
@@ -79,6 +88,11 @@ app.get('/filings/:ticker', (req, res) => {
 })
 
 app.get('/filings/:ticker/:statement', (req, res) => {
+  /**
+  Returns JSON containing the most recent filings for the given company by statement type.
+  The rawFiling key brings you to the original filing document (usually XML)
+  The url key brings you to the page for that filing with every document contained in the filing.
+  */
   const symbol = req.params.ticker;
   const statementType = req.params.statement
   const urlBase = 'https://www.sec.gov'
