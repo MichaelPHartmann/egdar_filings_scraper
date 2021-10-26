@@ -1,0 +1,17 @@
+{
+  "name": "edgar-sec-api",
+  "version": "1.0.0",
+  "description": "Practice creating an API using JavaScript. Originally created for an Ania Kubow tutorial, but has since been modified significantly for this use.",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "author": "Michael Hartmann",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.23.0",
+    "cheerio": "^1.0.0-rc.10",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.14"
+  }
+}
