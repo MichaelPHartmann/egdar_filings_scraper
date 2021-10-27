@@ -1,6 +1,4 @@
-
-
-const PORT = process.env.PORT || 8000
+const PORT = process.env.PORT || 8001
 const express = require('express')
 const axios = require('axios')
 const cheerio = require('cheerio')
@@ -59,9 +57,16 @@ app.get('/filings/:ticker', (req, res) => {
   */
   const symbol = req.params.ticker;
   const urlBase = 'https://www.sec.gov'
-  let tickerUrlExtend = `/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&owner=include`
 
-  axios.get(urlBase + tickerUrlExtend)
+  // Checks whether a count query param has been entered and builds the correct url
+  let urlExtend
+  if (req.query.count) {
+    const nLast = req.query.count
+    urlExtend = `/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&owner=include&count=${nLast}`
+  } else {urlExtend = `/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&owner=include`}
+
+  // Axios is used to retrieve the url response promise, which is then handled asynchronously
+  axios.get(urlBase + urlExtend)
     .then(response => {
       const html = response.data;
       const $ = cheerio.load(html);
@@ -96,9 +101,14 @@ app.get('/filings/:ticker/:statement', (req, res) => {
   const symbol = req.params.ticker;
   const statementType = req.params.statement
   const urlBase = 'https://www.sec.gov'
-  let tickerUrlExtend = `/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&owner=include&type=${statementType}`
 
-  axios.get(urlBase + tickerUrlExtend)
+  let urlExtend
+  if (req.query.count) {
+    const nLast = req.query.count
+    urlExtend = `/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&owner=include&type=${statementType}&count=${nLast}`
+  } else {urlExtend = `/cgi-bin/browse-edgar?action=getcompany&CIK=${symbol}&owner=include&type=${statementType}`}
+
+  axios.get(urlBase + urlExtend)
     .then(response => {
       const html = response.data;
       const $ = cheerio.load(html);
